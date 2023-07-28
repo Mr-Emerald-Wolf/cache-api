@@ -1,0 +1,12 @@
+version: "3"
+services:
+  app:
+    # Build the Docker image using the Dockerfile in the current directory
+    build: .
+    # Map the port from the container to the host machine
+    ports:
+      - "8080:8080"
+    # Set any environment variables if required (optional)
+    environment:
+      - ENV_VAR_NAME=example_value
+
