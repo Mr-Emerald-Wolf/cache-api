@@ -63,5 +63,5 @@ func GetCacheLRU(ctx *fiber.Ctx) error {
 	if queue.Len() == 0 {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"Message": "Cache Empty", "Eviction Policy": "LRU"})
 	}
-	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"Message": "Cache", "Front": queue.Front(), "Items": cache})
+	return ctx.Status(fiber.StatusOK).JSON(fiber.Map{"Message": "Cache", "Least Recently Used": queue.Front(), "Most Recently Used": queue.Back(), "Items": cache})
 }
