@@ -10,5 +10,4 @@ func main() {
 	cache := initializers.InitCache()
 
 	app := fiber.New()
-	
 }

@@ -1,7 +1,9 @@
 package initializers
 
-import "github.com/mr-emerald-wolf/go-cache-api/structs"
-
+import (
+	"github.com/mr-emerald-wolf/go-cache-api/eviction"
+	"github.com/mr-emerald-wolf/go-cache-api/structs"
+)
 
 type CacheMemory struct {
 	LRU  *structs.Cache
@@ -10,9 +12,10 @@ type CacheMemory struct {
 }
 
 func InitCache() *CacheMemory {
-	lru := structs.NewCache(3)
-	fifo := structs.NewCache(3)
-	lifo := structs.NewCache(3)
+	
+	lru := structs.NewCache(3, &eviction.LRUEvictionPolicy{})
+	fifo := structs.NewCache(3, &eviction.FIFOEvictionPolicy{})
+	lifo := structs.NewCache(3, &eviction.LIFOEvictionPolicy{})
 
 	return &CacheMemory{
 		LRU:  lru,

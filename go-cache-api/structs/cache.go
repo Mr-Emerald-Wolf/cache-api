@@ -6,50 +6,21 @@ import (
 )
 
 type Cache struct {
-	Capacity int
-	Items    map[string]interface{}
-	Queue    *list.List
-	Mutex    sync.Mutex
+	Capacity       int
+	Items          map[string]interface{}
+	Queue          *list.List
+	Mutex          sync.Mutex
+	EvictionPolicy EvictionPolicy // Custom eviction policy
+
 }
 
-func NewCache(Capacity int) *Cache {
+func NewCache(Capacity int, policy EvictionPolicy) *Cache {
 	return &Cache{
 		Capacity: Capacity,
 		Items:    make(map[string]interface{}),
 		Queue:    list.New(),
+		EvictionPolicy: policy,
 	}
-}
-
-func (c *Cache) Get(key string) (interface{}, bool) {
-	c.Mutex.Lock()
-	defer c.Mutex.Unlock()
-
-	if value, found := c.Items[key]; found {
-		c.Queue.MoveToFront(value.(*list.Element))
-		return value, true
-	}
-
-	return nil, false
-}
-
-func (c *Cache) Set(key string, value interface{}) {
-	c.Mutex.Lock()
-	defer c.Mutex.Unlock()
-
-	if existing, found := c.Items[key]; found {
-		c.Queue.MoveToFront(existing.(*list.Element))
-		c.Items[key] = c.Queue.Front()
-		return
-	}
-
-	if c.Queue.Len() >= c.Capacity {
-		back := c.Queue.Back()
-		delete(c.Items, back.Value.(string))
-		c.Queue.Remove(back)
-	}
-
-	element := c.Queue.PushFront(key)
-	c.Items[key] = element
 }
 
 func (c *Cache) removeFromQueue(key string) {
@@ -86,4 +57,5 @@ func (c *Cache) Length() int {
 
 	return len(c.Items)
 }
+
 
